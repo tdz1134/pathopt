@@ -28,8 +28,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # 导入算法和场景（触发注册）
-import algorithms.interpolation   # noqa: F401
-import algorithms.optimization    # noqa: F401
+import algorithms                 # noqa: F401  一个算法一个文件，包导入时完成全部注册
 import scenarios.presets          # noqa: F401
 
 from registry import registry

@@ -27,17 +27,44 @@ from registry import registry
 
 # ─── 配色方案 ────────────────────────────────────────────────────────────────
 
-# 算法 → (线型, 颜色, 线宽)
+# 算法 → (颜色/线型, 线宽)
 DEFAULT_STYLES = {
+    # Catmull-Rom 系列
     "cr_uniform":          ('b-',   2.2),
     "cr_chord":            ('c-',   2.0),
     "cr_centripetal":      ('g-',   2.0),
+    # 样条插值
     "akima":               ('m-',   1.8),
     "natural_cubic":       ('orange', 1.8),
     "pchip":               ('brown', 1.8),
+    "quintic_hermite":     ('teal', 1.9),
+    "rbf_interp":          ('#5f9ea0', 1.8),
+    # B 样条
+    "bspline_uniform_cubic": ('#483d8b', 1.9),
+    "bspline_chord_cubic":   ('#6a5acd', 1.9),
+    "bspline_approx":        ('slateblue', 1.8),
+    "reinsch_smooth_spline": ('navy', 1.8),
+    "quadratic_bspline_chaikin": ('#2f4f4f', 1.8),
+    # 贝塞尔
+    "bezier_chain":        ('deeppink', 1.9),
+    "bezier_ls_fit":       ('crimson', 1.8),
+    "bezier_corner_g2":    ('#b8860b', 2.0),
+    # 曲率连续 / 螺旋
     "clothoid":            ('r-',   2.0),
+    "polynomial_spiral":   ('firebrick', 2.0),
+    # 多项式 / 滤波 / baseline
+    "polynomial_global":   ('#708090', 1.6),
+    "savgol_smooth":       ('olive', 1.7),
+    "linear":              ('k--',  1.4),
+    # 优化 / 能量最小
     "min_curvature_energy":('darkgreen', 2.0),
     "elastic_band":        ('purple', 2.0),
+    "min_acceleration":    ('#00ced1', 1.9),
+    "min_jerk":            ('#1e90ff', 1.9),
+    "min_snap":            ('#008b8b', 1.9),
+    "discrete_bending_qp": ('#556b2f', 1.9),
+    "laplacian_smooth":    ('gray', 1.7),
+    "curve_shortening":    ('#8b008b', 1.8),
 }
 
 _FALLBACK_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
