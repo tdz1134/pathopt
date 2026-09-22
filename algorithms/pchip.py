@@ -5,13 +5,13 @@ import numpy as np
 from scipy.interpolate import PchipInterpolator
 
 from registry import registry
-from ._common import chord_param
+from ._common import chord_param, dedupe_consecutive
 
 
 @registry.algorithm("pchip")
 def pchip(pts: np.ndarray, start_tangent: float, spacing: float = 0.1) -> np.ndarray:
     """PCHIP 单调插值（保形，无过冲）。"""
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     if len(pts) < 2:
         return pts.copy()
     t = chord_param(pts)

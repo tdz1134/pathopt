@@ -6,6 +6,16 @@ from math import comb
 import numpy as np
 
 
+def dedupe_consecutive(pts: np.ndarray, tol: float = 1e-9) -> np.ndarray:
+    """去除连续重复点 — 避免弦长参数非单调或样条节点除零。"""
+    pts = np.asarray(pts, dtype=np.float64)
+    if len(pts) < 2:
+        return pts.copy()
+    d = np.linalg.norm(np.diff(pts, axis=0), axis=1)
+    keep = np.concatenate([[True], d > tol])
+    return pts[keep]
+
+
 def chord_param(pts: np.ndarray) -> np.ndarray:
     """弦长累加参数化。"""
     d = np.linalg.norm(np.diff(pts, axis=0), axis=1)

@@ -5,13 +5,13 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 
 from registry import registry
-from ._common import chord_param
+from ._common import chord_param, dedupe_consecutive
 
 
 @registry.algorithm("natural_cubic")
 def natural_cubic(pts: np.ndarray, start_tangent: float, spacing: float = 0.1) -> np.ndarray:
     """自然三次样条 (C2 连续)。"""
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     if len(pts) < 2:
         return pts.copy()
     t = chord_param(pts)

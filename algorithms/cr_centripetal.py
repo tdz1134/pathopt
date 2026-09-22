@@ -4,12 +4,13 @@ from __future__ import annotations
 import numpy as np
 
 from registry import registry
+from ._common import dedupe_consecutive
 
 
 @registry.algorithm("cr_centripetal")
 def cr_centripetal(pts: np.ndarray, start_tangent: float, spacing: float = 0.1) -> np.ndarray:
     """向心参数化 Catmull-Rom (alpha=0.5)。"""
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     n = len(pts)
     if n < 2:
         return pts.copy()

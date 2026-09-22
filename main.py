@@ -15,6 +15,9 @@
     # 只跑指定场景
     python main.py --scenarios sharp_corner,hairpin
 
+    # 算法耗时基准（每组合预热后重复 20 次取中位数）
+    python main.py --bench 20
+
     # 保存图片到 output 目录
     python main.py --output ./output
 """
@@ -32,7 +35,8 @@ import algorithms                 # noqa: F401  一个算法一个文件，包�
 import scenarios.presets          # noqa: F401
 
 from registry import registry
-from runner import run_all, print_summary, results_to_table
+from runner import (run_all, run_benchmark, print_summary, print_timing_summary,
+                    results_to_table)
 from visualizer import plot_scenario_comparison, plot_overview_grid, plot_metric_bars
 
 
@@ -54,6 +58,8 @@ def main():
                         help="不显示图表，只打印指标表")
     parser.add_argument("--no-show", action="store_true",
                         help="保存图片但不弹出显示")
+    parser.add_argument("--bench", type=int, default=0, metavar="N",
+                        help="耗时基准模式：每组合预热后重复 N 次（不跑指标/绘图）")
     args = parser.parse_args()
 
     # 解析参数
@@ -73,6 +79,12 @@ def main():
         print("Error: 没有匹配的场景。")
         print(f"可用场景: {registry.list_scenarios()}")
         sys.exit(1)
+
+    # ── 基准模式：只测耗时，不跑指标/绘图 ────────────────────────────
+    if args.bench > 0:
+        run_benchmark(scenarios=scenarios, algo_names=algo_names,
+                      spacing=args.spacing, repeat=args.bench)
+        return
 
     # 输出目录
     output_dir = args.output
@@ -96,6 +108,8 @@ def main():
     # ── 指标表 ───────────────────────────────────────────────────────────
     for metric in (metric_names or ["max_curvature", "smoothness", "length"]):
         print_summary(results, metric_name=metric)
+
+    print_timing_summary(results)
 
     # ── 可视化 ───────────────────────────────────────────────────────────
     if args.no_plot:

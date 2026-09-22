@@ -33,10 +33,22 @@ def bspline_approx(pts: np.ndarray, start_tangent: float,
 
     # 平滑因子与点数、弦长尺度挂钩
     s = 1e-3 * len(pts_u) * (t_u[-1] ** 2)
+    # 首末点重复加权：最小二乘中等效权重 ×(reps+1)，把路径端点锚住
+    reps = 5
+    rng = t_u[-1] - t_u[0]
+    head_t = t_u[0] - rng * np.linspace(5e-4, 1e-4, reps)
+    tail_t = t_u[-1] + rng * np.linspace(1e-4, 5e-4, reps)
+    data_t = np.concatenate([head_t, t_u, tail_t])
+    data = np.vstack([np.tile(pts_u[0], (reps, 1)), pts_u,
+                      np.tile(pts_u[-1], (reps, 1))])
     try:
-        tck, _ = splprep([pts_u[:, 0], pts_u[:, 1]], k=k, s=s)
+        tck, _ = splprep([data[:, 0], data[:, 1]], u=data_t, k=k, s=s)
     except Exception:
-        tck, _ = splprep([pts_u[:, 0], pts_u[:, 1]], k=k, s=0.0)
+        tck, _ = splprep([data[:, 0], data[:, 1]], u=data_t, k=k, s=0.0)
     uv = np.linspace(0.0, 1.0, 300)
     x, y = splev(uv, tck)
-    return np.column_stack([x, y])
+    out = np.column_stack([x, y])
+    # 末点硬性锚定（消除残余的微小参数偏移）
+    out[0] = pts_u[0]
+    out[-1] = pts_u[-1]
+    return out

@@ -6,7 +6,7 @@ from scipy.optimize import minimize
 from scipy.interpolate import CubicSpline
 
 from registry import registry
-from ._common import chord_param
+from ._common import chord_param, dedupe_consecutive
 
 
 @registry.algorithm("min_curvature_energy")
@@ -18,7 +18,7 @@ def min_curvature_energy(pts: np.ndarray, start_tangent: float,
     使得最终样条曲率能量最小。
     这是一个简化的演示版本 —— 实际可以做得更精细。
     """
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     n = len(pts)
     if n < 3:
         return pts.copy()

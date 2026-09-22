@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from registry import registry
-from ._common import chord_param
+from ._common import chord_param, dedupe_consecutive
 
 
 @registry.algorithm("polynomial_global")
@@ -15,7 +15,7 @@ def polynomial_global(pts: np.ndarray, start_tangent: float,
     点少时勉强可用，点多/拐弯时会剧烈振荡甚至末端爆炸，
     用于对比说明"为什么路径平滑要用分段低阶而不是全局高阶"。
     """
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     n = len(pts)
     if n < 2:
         return pts.copy()

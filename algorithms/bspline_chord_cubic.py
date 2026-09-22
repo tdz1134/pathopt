@@ -5,14 +5,14 @@ import numpy as np
 from scipy.interpolate import make_interp_spline
 
 from registry import registry
-from ._common import chord_param
+from ._common import chord_param, dedupe_consecutive
 
 
 @registry.algorithm("bspline_chord_cubic")
 def bspline_chord_cubic(pts: np.ndarray, start_tangent: float,
                         spacing: float = 0.1) -> np.ndarray:
     """弦长参数化三次 B 样条插值：求解控制点使曲线严格经过所有数据点。"""
-    pts = np.asarray(pts, dtype=np.float64)
+    pts = dedupe_consecutive(np.asarray(pts, dtype=np.float64))
     n = len(pts)
     if n < 2:
         return pts.copy()
